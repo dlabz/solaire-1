@@ -6,6 +6,75 @@
         <canvas width="800" height="600" id="draw"></canvas>
         <script type="text/javascript">
 
+            class Tool{
+                //generic tool
+                constructor(canvas, id, name){
+                    this.canvas = canvas;
+                    this.id = id;
+                    this.name = name;
+                    this.button = this.makeButton(id,name)
+                }
+                activate(){
+                   this.canvas.addEventListener('mouseDown',this.onMouseDown) 
+                }
+                deactivate(){
+                   this.canvas.removeEventListener('mouseDown',this.onMouseDown) 
+                }
+                onMouseDown(event){
+                    //do something
+                }
+                onMouseMove(event){
+                    //do something else
+                }
+                //button to activate tool
+                makeButton(){
+                    let b = document.createElement('button');
+                    b.setAttribute('class', 'tool-button');
+                    b.setAttribute('id', this.id);
+                    b.innerHtml = this.name;
+                
+                    return b;
+                }
+            }
+            
+            
+            
+            class SolarCanvas {
+                constructor(id){
+                    this.canvas = document.querySelector('#draw');
+                    this.ctx = this.canvas.getContext("2d");
+                    this.shapes = [];
+                    this.tools = {}
+                    this.activeTool = 'select';
+                }
+                addTool(tool){
+                    this.tools[tool.id] = tool;
+                }
+                switchTool(id){
+                    this.tools[this.activeTool].deactivate();
+                    this.tools[id].activate();
+                    this.activeTool = id;
+                }
+            }
+            
+            /**
+             *Shape is something that can be drawn on canvas
+             */
+            class Shape {
+                 constructor(style){
+                     this.style = style;
+                     this.points = [];
+                 }
+                addPoint(x,y){
+                   this.points.push([x,y]) 
+                }
+            }
+            
+            let s = new SolarCanvas("draw")
+            s.addTool(new Tool('pencil', 'Free Hand Tool'));
+            s.addTool(new Tool('eraser', 'Eraser Tool'));
+            
+            
             const c=document.getElementById("draw");
             const ctx=c.getContext("2d");
 
